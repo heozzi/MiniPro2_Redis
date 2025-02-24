@@ -1,0 +1,35 @@
+volumes:            # 볼륨
+  mysql_data:       # 커스텀 (mysql_data) 지정
+
+networks:           # 네트워크 지정
+  all_dir_network:  # 커스텀(all_dir_network) 지정
+    driver: bridge  # 드라이버 타입 지정
+
+# 서비스 파트 (db -> server->frontend -> nginx)
+services:
+  database:           # 서비스명
+    container_name: database # 컨테이너명, 타 서비스에서 접속시 도메인 역활 담당
+    image: mysql              # 이미지명 (도커 허브를 통해서 다운)
+    restart: always           # 비정상 다운될때 자동 재가동
+    environment:
+      - MYSQL_ROOT_PASSWORD=p1234 # 루트 사용자 비번
+      - MYSQL_DATABASE=miniproject       # 초기 데이터베이스명
+      - MYSQL_USER=guest          # 일반 사용자 아이디
+      - MYSQL_PASSWORD=p1234      # 일반 사용자 비번
+    volumes:
+      - mysql_data:/var/lib/mysql # 데이터베이스 컨테이너가 삭제되고 새로 생성, 데이터는 유지
+    ports:
+      - "3306:3306"               # 외부포트, 내부포트
+    networks:
+      - all_dir_network           # 컨셉 : 모든 서비스는 동일 네트워크에 배치
+    command:
+      --bind-address=0.0.0.0      # 모든 IP에 대해 접속 OK (경우에 따라 생략 가능함)
+
+  redis:
+    container_name: redis
+    image: redis
+    networks:
+      - all_dir_network
+    restart: always
+    ports:
+      - "6379:6379"
