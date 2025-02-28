@@ -43,7 +43,8 @@ jobs:
           source:
             docker-compose.yml,
             ./nginx/default.conf,
-            redis.conf
+            redis.conf,
+            server.properties
           target: /home/ubuntu
 
       - name: EC2에 jar파일 업로드

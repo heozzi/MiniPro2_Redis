@@ -37,6 +37,10 @@ services:
     # 시그니처 포트, 변경가능함
     ports:
       - "9092:9092"
+    volumes:
+      - ./server.properties:/etc/kafka/server.properties
+    command: [ "kafka-server-start.sh", "/etc/kafka/server.properties" ]
+
     environment:
       # Kafka 브로커(서버)마다 고유한 ID를 설정
       # 여러 개의 Kafka 브로커를 실행할 경우, 각 브로커마다 다른 ID를 설정
