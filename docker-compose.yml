@@ -15,9 +15,13 @@ services:
     restart: always
     ports:
       - "6379:6379"
-    volumes:
-      - ./redis.conf:/etc/redis/redis.conf
-    command: [ "redis-server", "/etc/redis/redis.conf" ]
+    environment:
+      - REDIS_HOST = 34.212.241.179
+      - REDIS_PORT = 6379
+
+  #    volumes:
+#      - ./redis.conf:/etc/redis/redis.conf
+#    command: [ "redis-server", "/etc/redis/redis.conf" ]
 
   zookeeper:
     image: "confluentinc/cp-zookeeper:latest"
