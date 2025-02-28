@@ -19,7 +19,7 @@ jobs:
           java-version: '17'
       - name: application.properties 동적 생성
         run : |
-          echo "${{secrets.APPLICATION_PRO }}" > ./src/main/resources/application.yml
+          echo "${{secrets.APPLICATION_PRO }}" > ./src/main/resources/application.properties
           
 
       - name: 도커 작업을 진행하기 위한 액션 적용
