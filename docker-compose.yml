@@ -1,13 +1,17 @@
 volumes:            # 볼륨
   mysql_data:       # 커스텀 (mysql_data) 지정
 
+networks:           # 네트워크 지정
+  all_dir_network:  # 커스텀(all_dir_network) 지정
+    driver: bridge  # 드라이버 타입 지정
 
 # 서비스 파트 (db -> server->frontend -> nginx)
 services:
   redis:
     container_name: redis
     image: redis
-    network_mode: "host"
+    networks:
+      - all_dir_network
     restart: always
     ports:
       - "6379:6379"
@@ -17,7 +21,8 @@ services:
 
   zookeeper:
     image: "confluentinc/cp-zookeeper:latest"
-    network_mode: "host"
+    networks:
+      - all_dir_network
     environment:
       # Zookeeper가 클라이언트(예: Kafka Broker)와 통신하는 포트
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -25,9 +30,10 @@ services:
   # 메세지 브로커, 메세지 저장하고 관리
   kafka:
     image: "confluentinc/cp-kafka:latest"
-    network_mode: "host"
     depends_on:
       - zookeeper
+    networks:
+      - all_dir_network
     # 시그니처 포트, 변경가능함
     ports:
       - "9092:9092"
@@ -44,7 +50,7 @@ services:
       # Kafka가 클라이언트(Producer, Consumer)와 통신할 수 있도록 외부에 공개하는 주소
       # PLAINTEXT: 암호화되지 않은 통신 방식 (기본 프로토콜)
       # localhost:9092: Kafka가 클라이언트에게 노출하는 호스트와 포트
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://34.212.241.179:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
 
       # Consumer의 오프셋(Offset)을 저장하는 전용 토픽을 사용
       # Offset을 저장하는 토픽의 복제본(replica) 개수를 설정
